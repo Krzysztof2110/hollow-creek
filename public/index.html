@@ -62,7 +62,7 @@ button:hover{border-color:var(--red)}
   <div id="setup">
     <div class="card brief">
       <p><b>Twoja misja.</b> Pięć dni temu zniknął Tomek Wrona, Twój najlepszy przyjaciel. Ślad prowadzi do opuszczonej stacji badawczej „Latarnia” w lesie, gdzie rząd badał Szczelinę, pęknięcie w rzeczywistości.</p>
-      <p><b>Dziś o północy Szczelina otworzy się na stałe.</b> Masz 15 tur po pół godziny (od 16:30), żeby odnaleźć Tomka i zamknąć Szczelinę.</p>
+      <p><b>Dziś o północy Szczelina otworzy się na stałe.</b> Masz 18 tur po pół godziny (od 15:00), żeby odnaleźć Tomka i zamknąć Szczelinę.</p>
       <p><b>Uwaga.</b> Możesz pisać własne działania. Brawura, kłamstwa, napaści i marnowanie czasu mają swoją cenę, a Cień nie czeka.</p>
     </div>
     <div class="card">
@@ -70,7 +70,7 @@ button:hover{border-color:var(--red)}
       <input id="name" type="text" maxlength="24" placeholder="np. Kasia" autocomplete="off">
       <label>Kim jesteś?</label>
       <div class="roles" id="roles"></div>
-      <button class="go" id="start" disabled>Zaczynam o 16:30</button>
+      <button class="go" id="start" disabled>Zaczynam o 15:00</button>
     </div>
   </div>
 
@@ -98,7 +98,7 @@ button:hover{border-color:var(--red)}
 <script>
 const $=id=>document.getElementById(id);
 const sid=sessionStorage.sid||(sessionStorage.sid=crypto.randomUUID());
-let role=-1,busy=false,MAXT=15;
+let role=-1,busy=false,MAXT=18;
 
 async function post(path,body){
  const r=await fetch(path,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({sid,...body})});
@@ -110,7 +110,7 @@ function chk(){$("start").disabled=!($("name").value.trim()&&role>=0)}
 $("name").oninput=chk;
 
 (async()=>{
- try{const j=await (await fetch("/api/roles")).json();MAXT=j.maxTurn||15;
+ try{const j=await (await fetch("/api/roles")).json();MAXT=j.maxTurn||18;
   j.roles.forEach((r,i)=>{const b=document.createElement("button");b.className="role";
    const t=document.createElement("b");t.textContent=r.t;const d=document.createElement("span");d.textContent=r.d;b.append(t,d);
    b.onclick=()=>{role=i;document.querySelectorAll(".role").forEach(x=>x.classList.remove("sel"));b.classList.add("sel");chk()};
