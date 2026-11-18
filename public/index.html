@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hollow Creek ’86: Do północy</title>
+<style>
+:root{--bg:#0b0708;--card:#150d10;--ink:#eadfd6;--mute:#9a8a86;--red:#ff2a4d;--line:#3a1a22;--you:#2a1218;--ok:#5fd38d;--amb:#f0b34a}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 Georgia,"Times New Roman",serif;min-height:100vh}
+.wrap{max-width:740px;margin:0 auto;padding:20px 16px 50px}
+h1{font:900 clamp(28px,7vw,46px)/1 "Arial Black",Impact,sans-serif;color:var(--red);letter-spacing:.04em;text-transform:uppercase;margin:8px 0 4px;text-shadow:0 0 18px rgba(255,42,77,.5)}
+.sub{color:var(--mute);margin:0 0 18px;font-style:italic}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;margin-bottom:12px}
+.brief{border-left:3px solid var(--red)}.brief p{margin:0 0 .6em}.brief p:last-child{margin:0}
+label{display:block;font:600 13px Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin:14px 0 6px}
+input[type=text]{width:100%;padding:11px 12px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit}
+.roles{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px}
+button{font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:10px 12px;text-align:left}
+button:hover{border-color:var(--red)}
+.role.sel{border-color:var(--red);box-shadow:0 0 0 1px var(--red) inset}
+.role b{display:block;font:700 15px Arial,sans-serif}.role span{font-size:13px;color:var(--mute);line-height:1.3;display:block}
+.go{background:var(--red);color:#fff;border-color:var(--red);font:700 16px Arial,sans-serif;margin-top:18px;width:100%;text-align:center;padding:13px}
+.go:disabled{opacity:.5;cursor:not-allowed}
+.hud{position:sticky;top:0;z-index:5;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin-bottom:14px}
+.top{display:flex;justify-content:space-between;gap:10px;font:700 14px Arial,sans-serif;flex-wrap:wrap}
+.clock{color:var(--amb)}.act{color:var(--mute);font-weight:600}
+.bar{height:8px;background:var(--bg);border:1px solid var(--line);border-radius:6px;overflow:hidden;margin:8px 0}
+.bar i{display:block;height:100%;width:0;background:var(--amb);transition:width .5s}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:4px 14px;font:600 12px Arial,sans-serif;color:var(--mute)}
+.st{display:flex;align-items:center;gap:8px}.st span{width:78px;flex:none}
+.meter{flex:1;height:7px;background:var(--bg);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.meter i{display:block;height:100%;width:0;transition:width .5s}
+.g{background:var(--ok)}.r{background:var(--red)}.a{background:var(--amb)}
+.items{font:12px Arial,sans-serif;color:var(--mute);margin-top:8px}.items b{color:var(--ink);font-weight:600}
+.goal{font-size:13px;color:var(--mute);line-height:1.35;margin-top:6px}
+#log{display:flex;flex-direction:column;gap:14px;margin-bottom:14px}
+.msg{padding:12px 14px;border-radius:10px;border:1px solid var(--line);background:var(--card)}
+.msg p{margin:0 0 .7em}.msg p:last-child{margin:0}
+.msg.you{background:var(--you);align-self:flex-end;max-width:88%;font-style:italic}
+.msg.sys{color:var(--mute);font-size:15px;border-style:dashed}
+.chg{font:600 12px Arial,sans-serif;color:var(--amb);margin-top:8px;letter-spacing:.03em}
+.opts{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.opts button{border-left:3px solid var(--red)}
+.row{display:flex;gap:8px}.row input{flex:1}
+.row button{background:var(--red);color:#fff;border-color:var(--red);font-weight:700}
+.dots::after{content:"…";animation:b 1s infinite}@keyframes b{50%{opacity:.2}}
+.hide{display:none}
+.reset{background:none;border:none;color:var(--mute);text-decoration:underline;padding:0;font-size:14px}
+.note{color:var(--mute);font-size:14px;margin-top:10px}
+.end{text-align:center;padding:22px 16px}.end h2{font:900 28px "Arial Black",sans-serif;margin:0 0 6px}
+.end.WYGRANA h2{color:var(--ok)}.end.PORAZKA h2{color:var(--red)}.end.CZESC h2{color:var(--amb)}
+.end .why{color:var(--mute);font-style:italic;margin:0 0 12px}
+.end .epi{text-align:left;margin:0 0 14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Hollow Creek ’86<br>Do północy</h1>
+  <p class="sub">Gra fabularna z celem i zegarem. Narrator to model AI, który reaguje na wszystko, co zrobisz. Twoje decyzje mają skutki. Możesz wygrać, ale możesz też przegrać.</p>
+
+  <div id="setup">
+    <div class="card brief">
+      <p><b>Twoja misja.</b> Pięć dni temu zniknął Tomek Wrona, Twój najlepszy przyjaciel. Ślad prowadzi do opuszczonej stacji badawczej „Latarnia” w lesie, gdzie rząd badał Szczelinę, pęknięcie w rzeczywistości.</p>
+      <p><b>Dziś o północy Szczelina otworzy się na stałe.</b> Masz 15 tur po pół godziny (od 16:30), żeby odnaleźć Tomka i zamknąć Szczelinę.</p>
+      <p><b>Uwaga.</b> Możesz pisać własne działania. Brawura, kłamstwa, napaści i marnowanie czasu mają swoją cenę, a Cień nie czeka.</p>
+    </div>
+    <div class="card">
+      <label for="name">Jak masz na imię?</label>
+      <input id="name" type="text" maxlength="24" placeholder="np. Kasia" autocomplete="off">
+      <label>Kim jesteś?</label>
+      <div class="roles" id="roles"></div>
+      <button class="go" id="start" disabled>Zaczynam o 16:30</button>
+    </div>
+  </div>
+
+  <div id="game" class="hide">
+    <div class="hud">
+      <div class="top"><span class="clock" id="clock"></span><span class="act" id="act"></span></div>
+      <div class="bar"><i id="bar"></i></div>
+      <div class="stats">
+        <div class="st"><span>Zdrowie</span><div class="meter"><i id="mh" class="g"></i></div></div>
+        <div class="st"><span>Zagrożenie</span><div class="meter"><i id="md" class="r"></i></div></div>
+        <div class="st"><span>Zaufanie Vance</span><div class="meter"><i id="mv" class="a"></i></div></div>
+        <div class="st"><span>Zaufanie szeryfa</span><div class="meter"><i id="mb" class="a"></i></div></div>
+      </div>
+      <div class="items" id="items"></div>
+      <div class="goal">Cel: odnaleźć Tomka i zamknąć Szczelinę przed północą.</div>
+    </div>
+    <div id="log"></div>
+    <div id="end" class="card end hide"></div>
+    <div class="opts" id="opts"></div>
+    <div class="row" id="input"><input id="free" type="text" maxlength="300" placeholder="Albo napisz, co robisz…" autocomplete="off"><button id="send">Wyślij</button></div>
+    <p class="note"><button class="reset" id="reset">Zacznij od nowa</button></p>
+  </div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const sid=sessionStorage.sid||(sessionStorage.sid=crypto.randomUUID());
+let role=-1,busy=false,MAXT=15;
+
+async function post(path,body){
+ const r=await fetch(path,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({sid,...body})});
+ const j=await r.json().catch(()=>({}));
+ if(!r.ok){const e=new Error(j.error||("Błąd "+r.status));e.expired=!!j.expired;throw e}
+ return j;
+}
+function chk(){$("start").disabled=!($("name").value.trim()&&role>=0)}
+$("name").oninput=chk;
+
+(async()=>{
+ try{const j=await (await fetch("/api/roles")).json();MAXT=j.maxTurn||15;
+  j.roles.forEach((r,i)=>{const b=document.createElement("button");b.className="role";
+   const t=document.createElement("b");t.textContent=r.t;const d=document.createElement("span");d.textContent=r.d;b.append(t,d);
+   b.onclick=()=>{role=i;document.querySelectorAll(".role").forEach(x=>x.classList.remove("sel"));b.classList.add("sel");chk()};
+   $("roles").append(b)});
+ }catch{$("roles").textContent="Nie udało się wczytać postaci. Odśwież stronę."}
+})();
+
+function setText(el,text){el.replaceChildren();String(text).split(/\n+/).filter(s=>s.trim()).forEach(p=>{const e=document.createElement("p");e.textContent=p.trim();el.append(e)})}
+function addMsg(text,cls){const d=document.createElement("div");d.className="msg "+(cls||"");setText(d,text);$("log").append(d);d.scrollIntoView({block:"end",behavior:"smooth"});return d}
+function hud(h){
+ $("clock").textContent="Godzina "+h.clock+" · tura "+h.turn+"/"+h.maxTurn;$("act").textContent=h.act;
+ $("bar").style.width=((h.turn-1)/(h.maxTurn-1)*100)+"%";
+ $("mh").style.width=h.health*10+"%";$("md").style.width=h.danger*10+"%";$("mv").style.width=h.trustVance*10+"%";$("mb").style.width=h.trustBrandt*10+"%";
+ const it=$("items");it.replaceChildren();const b=document.createElement("b");b.textContent="Przedmioty: ";it.append(b,document.createTextNode(h.items.length?h.items.join(", "):"brak"));
+}
+function render(res){
+ const bub=document.querySelector(".msg.pending");
+ if(bub){bub.classList.remove("pending","dots");setText(bub,res.narration)}else addMsg(res.narration);
+ const last=$("log").lastElementChild;
+ if(res.changes&&res.changes.length){const c=document.createElement("div");c.className="chg";c.textContent=res.changes.join("  ·  ");last.append(c)}
+ hud(res.hud);
+ $("opts").replaceChildren();
+ if(res.ended)finish(res.ended);
+ else res.options.forEach(o=>{const b=document.createElement("button");b.textContent=o;b.onclick=()=>act(o,true);$("opts").append(b)});
+ last.scrollIntoView({block:"end",behavior:"smooth"});
+}
+function failure(e,retry){
+ const p=document.querySelector(".msg.pending");if(p)p.remove();
+ addMsg(e.message||"Błąd połączenia.","sys");
+ const b=document.createElement("button");
+ if(e.expired){b.textContent="Zacznij od nowa";b.onclick=reset}else{b.textContent="Ponów";b.onclick=()=>{$("opts").replaceChildren();retry()}}
+ $("opts").append(b);
+}
+async function run(path,body,shown){
+ if(busy)return;busy=true;$("opts").replaceChildren();
+ if(shown)addMsg(shown,"you");
+ const p=addMsg("","pending dots");
+ try{render(await post(path,body))}catch(e){failure(e,()=>{busy=false;run(path,body,null)})}
+ busy=false;
+}
+function act(text,fromOpt){const v=(text||"").trim();if(!v||busy)return;$("free").value="";run("/api/act",{text:v},v)}
+function finish(en){
+ const e=$("end"),k=en.verdict==="WYGRANA"?"WYGRANA":en.verdict==="PORAŻKA"?"PORAZKA":"CZESC";
+ e.className="card end "+k;e.replaceChildren();
+ const h=document.createElement("h2");h.textContent=en.verdict;
+ const w=document.createElement("p");w.className="why";w.textContent=en.reason;
+ const ep=document.createElement("div");ep.className="epi";setText(ep,en.epilogue);
+ const b=document.createElement("button");b.className="go";b.style.maxWidth="260px";b.textContent="Zagraj ponownie";b.onclick=reset;
+ e.append(h,w,ep,b);$("input").classList.add("hide");
+ e.scrollIntoView({block:"end",behavior:"smooth"});
+}
+function reset(){
+ sessionStorage.sid=crypto.randomUUID();location.reload();
+}
+$("start").onclick=()=>{
+ $("setup").classList.add("hide");$("game").classList.remove("hide");
+ run("/api/start",{name:$("name").value.trim(),role},null);
+};
+$("send").onclick=()=>act($("free").value);
+$("free").onkeydown=e=>{if(e.key==="Enter")act($("free").value)};
+$("reset").onclick=()=>{if(confirm("Zacząć grę od nowa? Obecny postęp zostanie utracony."))reset()};
+</script>
+</body>
+</html>
