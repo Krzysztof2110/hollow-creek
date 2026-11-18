@@ -1,13 +1,15 @@
 # Hollow Creek ’86: Do północy
 
-Interaktywna gra tekstowa z narratorem AI (Google Gemini, z automatycznym przełączeniem na Groq). Masz 15 tur (od 16:30 do północy), żeby odnaleźć zaginionego przyjaciela i zamknąć Szczelinę. Narrator reaguje na wszystko, co napiszesz. Bez zależności npm (Node.js 18+).
+Interaktywna gra tekstowa z narratorem AI (Google Gemini, z automatycznym przełączeniem na Groq). Masz 18 tur po pół godziny (od 15:00 do północy), żeby odnaleźć zaginionego przyjaciela i zamknąć Szczelinę. Narrator reaguje na wszystko, co napiszesz. Bez zależności npm (Node.js 18+).
 
 ## Jak działa mechanika
+Akt I (tury 1–5): miasto. Akt II (tury 6–13): stacja „Latarnia”. Akt III (tury 14–18): finał w Zaciszu.
+
 - Gracz może wybierać z propozycji albo pisać własne działania.
 - **Stan gry pilnuje serwer**, a nie model: zdrowie (0 = śmierć), zagrożenie (10 = Cień Cię dopada), zaufanie dr Vance i szeryfa, przedmioty oraz dwa cele (Tomek odnaleziony, Szczelina zamknięta). Model opowiada historię i proponuje zmiany stanu, serwer je ogranicza i zatwierdza.
 - Zła gra ma skutki: brawura, napaści, kłamstwa i marnowanie czasu podnoszą zagrożenie, odbierają zdrowie, psują relacje albo kończą grę natychmiast.
 - Zakończenia: **WYGRANA** (Tomek + Szczelina), **CZĘŚCIOWY SUKCES** (tylko Szczelina), **GORZKI KONIEC** (tylko Tomek), **PORAŻKA** (śmierć, schwytanie, zagrożenie 10, północ bez sukcesu).
-- Tomka da się odnaleźć dopiero od tury 8, a Szczelinę zamknąć od tury 10. Samym tekstem („wygrywam”) nie da się oszukać gry.
+- Tomka da się odnaleźć dopiero od tury 9, a Szczelinę zamknąć od tury 12. Samym tekstem („wygrywam”) nie da się oszukać gry.
 
 ## Automatyczne przełączanie Gemini → Groq
 Przy ustawionych obu kluczach serwer pyta najpierw dostawcę z `LLM_PROVIDER` (domyślnie Gemini), a przy błędzie (timeout, 429, 5xx, zły klucz lub model) od razu powtarza zapytanie u drugiego. Dostawca, który zawiódł, jest omijany przez 60 s. `/health` pokazuje stan obu dostawców. `LLM_FALLBACK=off` wyłącza przełączanie. Modele: `GEMINI_MODEL`, `GROQ_MODEL`. Limit czasu: `LLM_TIMEOUT_MS` (domyślnie 40000).
